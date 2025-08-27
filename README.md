@@ -1,95 +1,74 @@
 # FLOCK Token Supply API
 
-这是一个为 FLOCK Token 提供 circulating supply 和 total supply 数据的 REST API，完全符合 CoinGecko 的要求。
+这是一个为 FLOCK 代币提供 circulating supply 和 total supply 数据的 API，符合 CoinGecko 的要求。
 
-## 代币信息
+## 功能特性
 
-- **代币名称**: FLOCK
-- **合约地址**: `0x5aB3D4c385B400F3aBB49e80DE2fAF6a88A7B691`
-- **网络**: Base (Ethereum L2)
-- **区块浏览器**: [BaseScan](https://basescan.org/token/0x5aB3D4c385B400F3aBB49e80DE2fAF6a88A7B691)
+- ✅ 公开访问，无需 API key
+- ✅ 支持 CORS，可从任何域名调用
+- ✅ 30分钟缓存机制，支持每30分钟轮询
+- ✅ 从 Base 区块链实时获取数据
+- ✅ 包含 decimals 信息
+- ✅ 符合 CoinGecko API 标准
 
 ## API 端点
 
-### 获取代币供应量信息
+### 获取代币供应信息
 
 ```
 GET /api/supply
 ```
 
-**响应示例:**
+**响应示例：**
+
 ```json
 {
   "token": "FLOCK",
   "symbol": "FLOCK",
-  "contract": "0x5aB3D4c385B400F3aBB49e80DE2fAF6a88A7B691",
+  "contract_address": "0x5aB3D4c385B400F3aBB49e80DE2fAF6a88A7B691",
   "network": "Base",
   "total_supply": 1000000000,
   "circulating_supply": 1000000000,
   "decimals": 18,
-  "timestamp": 1703123456789,
-  "last_updated": "2023-12-21T10:30:56.789Z"
+  "last_updated": "2024-08-27T10:00:00.000Z",
+  "source": "on-chain",
+  "api_version": "1.0.0"
 }
 ```
 
-## 特性
+## 部署到 Vercel
 
-### ✅ CoinGecko 合规要求
+### 1. 推送代码到 GitHub
 
-- **无需认证**: 完全公开访问，无需 API key
-- **REST API**: 简单的 HTTP GET 端点
-- **包含 decimals**: 响应中包含代币精度信息
-- **30分钟轮询支持**: 缓存机制确保支持每30分钟轮询一次
-- **公开访问**: 无需密码或认证
+```bash
+git add .
+git commit -m "Add FLOCK token supply API"
+git push origin main
+```
 
-### 🚀 技术特性
+### 2. 连接 Vercel
 
-- **智能缓存**: 30分钟缓存，减少区块链查询
-- **Rate Limiting**: 每小时最多100个请求，防止滥用
-- **CORS 支持**: 支持跨域请求
-- **错误处理**: 优雅的错误处理和降级机制
-- **实时数据**: 直接从 Base 区块链获取最新数据
+1. 访问 [vercel.com](https://vercel.com)
+2. 使用 GitHub 账号登录
+3. 点击 "New Project"
+4. 选择你的 GitHub 仓库
+5. 点击 "Deploy"
 
-## 部署
+### 3. 配置环境变量（可选）
 
-### Vercel 部署
+如果需要自定义 RPC 节点，可以在 Vercel 中设置环境变量：
 
-1. 确保已安装 Vercel CLI
-2. 在项目根目录运行:
-   ```bash
-   vercel --prod
-   ```
+- `RPC_URL`: 自定义 Base 网络 RPC 地址
 
-### 本地开发
-
-1. 安装依赖:
-   ```bash
-   npm install
-   ```
-
-2. 启动开发服务器:
-   ```bash
-   npm run dev
-   ```
-
-## 使用示例
+## 使用方法
 
 ### JavaScript/Node.js
 
 ```javascript
-const response = await fetch('https://your-domain.vercel.app/api/supply');
+const response = await fetch('https://your-vercel-app.vercel.app/api/supply');
 const data = await response.json();
-
 console.log(`FLOCK Total Supply: ${data.total_supply}`);
 console.log(`FLOCK Circulating Supply: ${data.circulating_supply}`);
-console.log(`Decimals: ${data.decimals}`);
-```
-
-### cURL
-
-```bash
-curl -X GET "https://your-domain.vercel.app/api/supply" \
-  -H "Accept: application/json"
 ```
 
 ### Python
@@ -97,52 +76,41 @@ curl -X GET "https://your-domain.vercel.app/api/supply" \
 ```python
 import requests
 
-response = requests.get('https://your-domain.vercel.app/api/supply')
+response = requests.get('https://your-vercel-app.vercel.app/api/supply')
 data = response.json()
-
 print(f"FLOCK Total Supply: {data['total_supply']}")
 print(f"FLOCK Circulating Supply: {data['circulating_supply']}")
-print(f"Decimals: {data['decimals']}")
 ```
 
-## Rate Limiting
+### cURL
 
-- **限制**: 每小时最多100个请求
-- **窗口**: 1小时滚动窗口
-- **超出限制**: 返回 429 状态码，1小时后重试
+```bash
+curl https://your-vercel-app.vercel.app/api/supply
+```
 
-## 缓存策略
+## 技术细节
 
+- **网络**: Base 主网
+- **代币合约**: `0x5aB3D4c385B400F3aBB49e80DE2fAF6a88A7B691`
 - **缓存时间**: 30分钟
-- **缓存内容**: 代币供应量数据
-- **缓存失效**: 自动过期或手动清除
-- **降级机制**: 出错时返回缓存数据
+- **RPC 节点**: `https://mainnet.base.org`
+- **框架**: Vercel Serverless Functions
+- **依赖**: ethers.js v6
 
-## 错误处理
+## 符合 CoinGecko 要求
 
-| 状态码 | 说明 |
-|--------|------|
-| 200 | 成功获取数据 |
-| 405 | 不支持的 HTTP 方法 |
-| 429 | 请求频率超限 |
-| 500 | 服务器内部错误 |
+- ✅ 公开访问，无需认证
+- ✅ 包含 decimals 信息
+- ✅ 支持每30分钟轮询
+- ✅ 从链上数据源获取
+- ✅ 简单的 REST API 端点
 
-## 网络要求
+## 注意事项
 
-- **RPC 节点**: Base 主网官方节点
-- **连接**: 需要访问 `https://mainnet.base.org`
-- **超时**: 建议设置合理的请求超时时间
+1. 当前 circulating supply 等于 total supply，如需更精确计算可添加额外逻辑
+2. API 使用内存缓存，在 Vercel 冷启动时会重新获取数据
+3. 建议在生产环境中使用更可靠的 RPC 节点
 
-## 监控和维护
+## 许可证
 
-- **日志**: 所有错误都会记录到控制台
-- **性能**: 缓存机制确保快速响应
-- **可用性**: 支持降级到缓存数据
-
-## 联系信息
-
-如有问题或需要支持，请联系开发团队。
-
----
-
-**注意**: 此 API 直接从区块链获取数据，确保数据的准确性和实时性。建议在生产环境中设置适当的监控和告警机制。
+MIT License
