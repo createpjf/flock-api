@@ -1,0 +1,35 @@
+{
+  "name": "flock-api",
+  "version": "1.0.0",
+  "description": "FLOCK Token Supply API - 符合 CoinGecko 要求的 circulating supply API",
+  "type": "module",
+  "main": "api/supply.js",
+  "scripts": {
+    "test": "node test-api.js",
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "start": "node api/supply.js"
+  },
+  "keywords": [
+    "flock",
+    "token",
+    "supply",
+    "api",
+    "coingecko",
+    "base",
+    "ethereum",
+    "blockchain"
+  ],
+  "author": "FLOCK Team",
+  "license": "MIT",
+  "dependencies": {
+    "ethers": "^6.13.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/flock-api.git"
+  }
+}
