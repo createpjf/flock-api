@@ -1,6 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "api/supply.js", "use": "@vercel/node" }
-  ]
+  "functions": {
+    "api/supply.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
